@@ -1,11 +1,6 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { GeistProvider, CssBaseline } from '@geist-ui/core'
 import "./globals.css";
-
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-});
 
 export const metadata: Metadata = {
   title: "Rental Portal",
@@ -18,8 +13,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={inter.className}>
-      <body>{children}</body>
+    <html lang="en">
+      <body>
+        <GeistProvider>
+          <CssBaseline />
+          {children}
+        </GeistProvider>
+      </body>
     </html>
   );
 }
