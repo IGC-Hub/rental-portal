@@ -1,82 +1,66 @@
-// components/properties/FeaturedProperties.tsx
 import { supabaseClient } from '@/lib/supabase/client';
+import { useEffect, useState } from 'react';
 
 export default function FeaturedProperties() {
-  // Uniquement les opérations de lecture publiques
-  const fetchProperties = async () => {
-    const { data } = await supabaseClient
-      .from('properties')
-      .select('*')
-      .limit(3);
-    return data;
-  };
-  // ...
-}
-// components/properties/FeaturedProperties.tsx
-import { formatPrice } from '@/constants/currency';
+  const [properties, setProperties] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-export default function FeaturedProperties() {
-  const properties = [
-    {
-      id: 1,
-      title: "Appartement Moderne",
-      location: "Centre-ville",
-      price: 1200.50,
-      area: 75,
-      bedrooms: 2,
-      bathrooms: 1,
-      image: '/images/property-1.jpg'  // Correction du chemin
-    },
-    {
-      id: 2,
-      title: "Studio Lumineux",
-      location: "Quartier Universitaire",
-      price: 800.75,
-      area: 82,
-      bedrooms: 1,
-      bathrooms: 1,
-      image: '/images/property-2.jpg'  // Correction du chemin
-    },
-    {
-      id: 3,
-      title: "Maison Familiale",
-      location: "Banlieue Résidentielle",
-      price: 2500.99,
-      area: 150,
-      bedrooms: 4,
-      bathrooms: 2,
-      image: '/images/property-3.jpg'  // Correction du chemin
-    }
-  ];
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const { data, error } = await supabaseClient
+          .from('properties')
+          .select('*')
+          .limit(6);
 
-  // Le reste du composant reste identique
+        if (error) throw error;
+        setProperties(data || []);
+      } catch (err) {
+        setError('Erreur lors du chargement des propriétés');
+        console.error('Error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProperties();
+  }, []);
+
+  if (loading) return <div>Chargement...</div>;
+  if (error) return <div>Erreur: {error}</div>;
+
   return (
-    <div className="my-12">
-      <h2 className="text-2xl font-bold text-gray-900 mb-8">Propriétés en vedette</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {properties.map((property) => (
-          <div key={property.id} className="bg-white rounded-lg shadow-lg overflow-hidden">
-            <img 
-              src={property.image} 
-              alt={property.title}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-6">
-              <h3 className="font-bold text-xl mb-2">{property.title}</h3>
-              <p className="text-gray-600 mb-4">{property.location}</p>
-              <div className="flex justify-between items-center">
-                <span className="text-blue-600 font-bold text-xl">
-                  {formatPrice(property.price)}/mois
-                </span>
-                <div className="text-gray-600">
-                  <span>{property.area}m² • </span>
-                  <span>{property.bedrooms} ch • </span>
-                  <span>{property.bathrooms} sdb</span>
-                </div>
+    <div className="bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">
+          Propriétés en Vedette
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {properties.map((property) => (
+            <div
+              key={property.id}
+              className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+            >
+              <div className="aspect-w-16 aspect-h-9 bg-gray-200">
+                <img
+                  src={property.image_url || '/placeholder-property.jpg'}
+                  alt={property.title}
+                  className="object-cover w-full h-full"
+                />
+              </div>
+              <div className="p-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  {property.title}
+                </h3>
+                <p className="text-gray-600 mb-2">{property.location}</p>
+                <p className="text-xl font-bold text-gray-900">
+                  ${property.price.toLocaleString()}
+                </p>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
