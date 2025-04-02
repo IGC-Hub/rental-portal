@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { GeistProvider, CssBaseline } from '@geist-ui/core'
+import { GeistProvider, CssBaseline } from '@geist-ui/core';
 import "./globals.css";
 
 export const metadata: Metadata = {
