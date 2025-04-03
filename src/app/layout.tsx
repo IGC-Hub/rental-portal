@@ -1,5 +1,7 @@
+Copieur// src/app/layout.tsx
 import React from 'react';
 import type { Metadata } from "next";
+import GeistProviderWrapper from '@/components/GeistProviderWrapper';
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,7 +17,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        <GeistProviderWrapper>
+          {children}
+        </GeistProviderWrapper>
       </body>
     </html>
   );
