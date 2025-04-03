@@ -3,8 +3,33 @@
 import { supabaseClient } from '@/lib/supabase/client';
 import { useEffect, useState } from 'react';
 
+// Données par défaut
+const defaultProperties = [
+  {
+    id: 1,
+    title: "Appartement Moderne Centre-Ville",
+    location: "Centre-ville",
+    price: 1200.50,
+    image_url: "/images/property-1.jpg"
+  },
+  {
+    id: 2,
+    title: "Studio Lumineux Quartier Universitaire",
+    location: "Quartier Universitaire",
+    price: 800.75,
+    image_url: "/images/property-2.jpg"
+  },
+  {
+    id: 3,
+    title: "Maison Familiale avec Jardin",
+    location: "Banlieue Résidentielle",
+    price: 2500.99,
+    image_url: "/images/property-3.jpg"
+  }
+];
+
 export default function FeaturedProperties() {
-  const [properties, setProperties] = useState<any[]>([]);
+  const [properties, setProperties] = useState<any[]>(defaultProperties); // Utiliser les données par défaut
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -17,7 +42,7 @@ export default function FeaturedProperties() {
           .limit(6);
 
         if (error) throw error;
-        setProperties(data || []);
+        setProperties(data?.length ? data : defaultProperties); // Utiliser les données par défaut si aucune donnée n'est retournée
       } catch (err) {
         setError('Erreur lors du chargement des propriétés');
         console.error('Error:', err);
@@ -46,7 +71,7 @@ export default function FeaturedProperties() {
             >
               <div className="aspect-w-16 aspect-h-9 bg-gray-200">
                 <img
-                  src={property.image_url || '/placeholder-property.jpg'}
+                  src={property.image_url}
                   alt={property.title}
                   className="object-cover w-full h-full"
                 />
