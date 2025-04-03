@@ -1,4 +1,4 @@
-Copieur// src/app/layout.tsx
+// src/app/layout.tsx
 import React from 'react';
 import type { Metadata } from "next";
 import GeistProviderWrapper from '@/components/GeistProviderWrapper';
